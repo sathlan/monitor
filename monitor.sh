@@ -12,10 +12,7 @@
 #/             --log|-l         <file>
 #/             [--command|-d    <dstat:-ddevice-1,-ddevice-2,..|...>]
 #/             
-#### REQUIREMENTS
-# getopt: 
-#    debian: apt-get install util-linux
-#    freebsd: portmaster misc/getopt
+
 
 # Exit if any following command exits with a non-zero status.
 set -e
