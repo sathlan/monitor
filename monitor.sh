@@ -25,6 +25,10 @@ LOG=""
 ACTION=""
 CMD=""
 ARGS=""
+SAR_PID=''
+CMD_PID=''
+OLD_WDIR="$PWD"
+
 
 monitor_usage()
 {
@@ -88,44 +92,62 @@ do
 done
 
 [ -z "$ACTION" ] && monitor_error "missing action."
-[ -z "$LOG"    ] && monitor_error "missing log file for sar."
+[ -z "$LOG" -a "$ACTION" != 'stop' ] && monitor_error "missing log file for sar."
 if ! monitor_valid_actions $ACTION; then
     monitor_error "invalid action."
 fi
 
-SAR_PID=''
-OLD_WDIR="$PWD"
+sanitize_log_path()
+{
+    local p_dir="$PWD"
+    local dir="$OLD_WDIR"
+    if echo "$LOG" | egrep -q '^(\.\.|/)'; then
+        cd `dirname "$LOG"`
+        dir="$PWD"
+    fi
+    LOG="${dir}/`basename $LOG`"
+    cd $p_dir
+    
+}
 
 monitor_start_sar()
 {
-    /usr/lib/sysstat/sadc -S XALL -L -F 1 ./sar.db &
+    pwd >&2
+    sanitize_log_path
+    /usr/lib/sysstat/sadc -S XALL -L -F 1 $LOG &
     SAR_PID=$!
+}
+
+monitor_parse_option()
+{
+    echo $ARGS | tr ',' ' '
 }
 
 monitor_do_start()
 {
     cd /
     test -x $SAR && monitor_start_sar
-    $ACTION `monitor_parse_option`
-    [ -d $OLD_DIR ] && cd $OLD_WDIR
+    $CMD `monitor_parse_option` &
+    CMD_PID=$!
+    wait
 }
 
 monitor_do_stop()
 {
-    [ -n "$SAR_PID" ] && kill -INT $SAR_PID
-    
+    [ -n "$SAR_PID" ] && kill -TERM $SAR_PID
+    [ -n "$CMD_PID" ] && kill -TERM $CMD_PID
 }
 
 monitor()
 {
     case "$ACTION" in
         start)
-            trap 'monitor_do_stop' EXIT INT
+            trap 'monitor_do_stop' EXIT INT TERM
             monitor_do_start
             return 0
             ;;
         stop)
-            monitor_do_stop
+            pkill -TERM -f 'monitor.*start'
             return 0
             ;;
         *)
