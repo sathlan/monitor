@@ -28,7 +28,7 @@ ARGS=""
 SAR_PID=''
 CMD_PID=''
 OLD_WDIR="$PWD"
-
+RC=0
 
 monitor_usage()
 {
@@ -44,6 +44,7 @@ monitor_error()
 {
     [ -n "$@" ] && monitor_log "$@" 
     monitor_usage
+    RC=64
     exit 1
 }
 
@@ -112,30 +113,39 @@ sanitize_log_path()
 
 monitor_start_sar()
 {
-    pwd >&2
     sanitize_log_path
-    /usr/lib/sysstat/sadc -S XALL -L -F 1 $LOG &
+    $SAR -S XALL -L -F 1 $LOG &
     SAR_PID=$!
 }
 
 monitor_parse_option()
 {
-    echo $ARGS | tr ',' ' '
+    echo $ARGS | tr ',' ' ' | sed -e 's/_ _/,/g'
 }
 
 monitor_do_start()
 {
-    cd /
     test -x $SAR && monitor_start_sar
-    $CMD `monitor_parse_option` &
+    [ -z "$CMD" ] && return 0
+    local args=`monitor_parse_option`
+    set +e
+    echo "$CMD $args" >> /tmp/log.me
+    $CMD $args &
     CMD_PID=$!
-    wait
+    wait $CMD_PID
+    local rc=$!
+    set -e
+    if [ $rc -ne 0 ]; then
+        CMD_PID="";
+        monitor_error "failed to start \"$CMD $args\"."
+    fi
 }
 
 monitor_do_stop()
 {
     [ -n "$SAR_PID" ] && kill -TERM $SAR_PID
     [ -n "$CMD_PID" ] && kill -TERM $CMD_PID
+    exit $RC
 }
 
 monitor()
@@ -144,6 +154,7 @@ monitor()
         start)
             trap 'monitor_do_stop' EXIT INT TERM
             monitor_do_start
+            wait
             return 0
             ;;
         stop)
