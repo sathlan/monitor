@@ -10,7 +10,7 @@
 #/ USAGE: monitor [--help|-h] [--version|-v]
 #/             --action|-a      <start|stop>
 #/             --log|-l         <file>
-#/             [--command|-d    <dstat:-ddevice-1,-ddevice-2,..|...>]
+#/             [--command|-d    <command:arg1,arg2>]
 #/             
 
 

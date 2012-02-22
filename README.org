@@ -8,7 +8,7 @@ Monitor is a system statistics grabber.  Usefull for testing.
   monitor [--help|-h] [--version|-v]
            --action|-a      <start|stop>
            --log|-l         <file>
-           [--command|-d    <dstat:-ddevice-1,-ddevice-2,..|...>]
+           [--command|-d    <command:arg1,arg2>]
   
 #+end_src
 
@@ -23,6 +23,15 @@ This is useful while testing a system to collect:
 
 It as the ability to properly kill itself when the tests are
 terminated.
+
+** USAGE
+The synopsis and the example describe the usage.  The only catch is
+for the free form command that can be stater in the foreground.
+
+The format is : =<command name>:<options separated by comma>=
+
+If one needs any comma in the options, it should be escaped like
+this : =_,_=.
 
 ** EXAMPLE
 Start a disk intensive test.  Then, use monitor to collect every
