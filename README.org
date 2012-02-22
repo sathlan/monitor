@@ -1,0 +1,65 @@
+* Monitor
+** SYNOPSIS
+
+Monitor is a system statistics grabber.  Usefull for testing.
+
+#+srcname: USAGE
+#+begin_src sh
+  monitor [--help|-h] [--version|-v]
+           --action|-a      <start|stop>
+           --log|-l         <file>
+           [--command|-d    <dstat:-ddevice-1,-ddevice-2,..|...>]
+  
+#+end_src
+
+** DESCRIPTION
+This script start a asynchronous sar collect with 1 second interval in
+the background and another on the foreground as an option.
+
+This is useful while testing a system to collect:
+ - every possible statistic with sar;
+ - give the user immediate feedback on the particular subsystem the
+   user is testing.
+
+It as the ability to properly kill itself when the tests are
+terminated.
+
+** EXAMPLE
+Start a disk intensive test.  Then, use monitor to collect every
+statistic in a file, here db.log, and start a dstat -df -Dsda,dm-0 in
+the foreground:
+
+: monitor -a start -l db.log -c dstat:-df,-Dsda1_,_dm-0
+
+Notice how the comma is escaped with _,_.
+
+The test end, so let's stop the monitoring:
+
+: monitor -a stop
+
+Now, enjoy the billion records you've got in db.log in csv format:
+
+: sadf -d -P ALL  -- -A 1 1000 db.log  | less
+
+** BUGS
+The sar utility imply a Linux based system as it's not available in
+(Free)BSD system.  Maybe dtrace can fill the gap.  If anyone has
+pointers, there are welcome.
+
+Only one monitor process should be running, but the utility doesn't
+enforce it.
+
+** SEE ALSO
+ 1. =sar=: [[http://sebastien.godard.pagesperso-orange.fr/][sysstat]]
+ 2. =roundup=: [[http://bmizerany.github.com/roundup/][for the tests.]]
+
+** AUTHOR
+sathlan <mypublicaddress-code@yahoo.com>
+
+** COPYRIGHT
+This software is Copyright (c) 2012 by sathlan.
+
+This is free software, licensed under:
+
+  The GNU Lesser General Public License, Version 3, June 2007
+
