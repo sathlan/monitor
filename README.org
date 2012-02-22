@@ -1,6 +1,10 @@
 * Monitor
-** SYNOPSIS
+** NAME
+: monitor : a simple system statistic wrapper around sar and others.
 
+The source is at [[https://github.com/sathlan/monitor][github]].
+
+** SYNOPSIS
 Monitor is a system statistics grabber.  Usefull for testing.
 
 :  monitor [--help|-h] [--version|-v]
@@ -54,12 +58,19 @@ pointers, there are welcome.
 Only one monitor process should be running, but the utility doesn't
 enforce it.
 
+This utility is Debian based as the =sadc= command path is hardcoded.
+See =SAR= at the top of the file, to change it 
+
+This utility has been tested on Debian Squeeze only.
+
+Fill issues there: https://github.com/sathlan/monitor/issues
+
 ** SEE ALSO
  1. =sar=: [[http://sebastien.godard.pagesperso-orange.fr/][sysstat]]
  2. =roundup=: [[http://bmizerany.github.com/roundup/][for the tests.]]
 
 ** AUTHOR
-sathlan <mypublicaddress-code@yahoo.com>
+sathlan <mypublicaddress-code@yahoo.com> 
 
 ** COPYRIGHT
 This software is Copyright (c) 2012 by sathlan.
