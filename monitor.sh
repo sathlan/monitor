@@ -129,7 +129,6 @@ monitor_do_start()
     [ -z "$CMD" ] && return 0
     local args=`monitor_parse_option`
     set +e
-    echo "$CMD $args" >> /tmp/log.me
     $CMD $args &
     CMD_PID=$!
     wait $CMD_PID
