@@ -2,6 +2,8 @@ PREFIX ?= /usr/local
 NAME=monitor
 
 install: monitor.sh
+	@which -s sar || (echo "Missing sar!"\
+		" Cannot run." >&2 && exit 1)
 	cp -fp monitor.sh $(PREFIX)/monitor
 	chmod a+rx $(PREFIX)/monitor
 
@@ -13,7 +15,7 @@ test:
 	@which -s roundup || (echo "Missing roundup!"\
 		" Cannot test." >&2 && exit 1)
 	@which -s sar || (echo "Missing sar!"\
-		" Cannot test." >&2 && exit 1)
+		" Cannot run." >&2 && exit 1)
 	@roundup monitor-test.sh
 
 .PHONY: install uninstall test
