@@ -31,8 +31,8 @@ this : =_,_=.
 
 ** EXAMPLE
 Start a disk intensive test.  Then, use monitor to collect every
-statistic in a file, here db.log, and start a dstat -df -Dsda,dm-0 in
-the foreground:
+statistic in a file, here db.log, and start a =dstat -df -Dsda,dm-0=
+in the foreground:
 
 : monitor -a start -l db.log -c dstat:-df,-Dsda1_,_dm-0
 
@@ -42,9 +42,9 @@ The test end, so let's stop the monitoring:
 
 : monitor -a stop
 
-Now, enjoy the billion records you've got in db.log in csv format:
+Now, enjoy the billion records you've got in =db.log= in =csv= format:
 
-: sadf -d -P ALL  -- -A 1 1000 db.log  | less
+: sadf -d -P ALL  -- -A 1 1000 db.log > metrics.csv
 
 ** BUGS
 The sar utility imply a Linux based system as it's not available in
