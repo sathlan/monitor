@@ -3,14 +3,10 @@
 
 Monitor is a system statistics grabber.  Usefull for testing.
 
-#+srcname: USAGE
-#+begin_src sh
-  monitor [--help|-h] [--version|-v]
-           --action|-a      <start|stop>
-           --log|-l         <file>
-           [--command|-d    <command:arg1,arg2>]
-  
-#+end_src
+:  monitor [--help|-h] [--version|-v]
+:           --action|-a      <start|stop>
+:           --log|-l         <file>
+:           [--command|-d    <command:arg1,arg2>]
 
 ** DESCRIPTION
 This script start a asynchronous sar collect with 1 second interval in
